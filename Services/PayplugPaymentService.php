@@ -5,7 +5,7 @@ namespace Alcalyn\PayplugBundle\Services;
 use Symfony\Component\Routing\Router;
 use Alcalyn\PayplugBundle\Model\Payment;
 use Alcalyn\PayplugBundle\Exceptions\PayplugUndefinedAccountParameterException;
-
+use Payplug;
 class PayplugPaymentService
 {
     /**
@@ -122,9 +122,47 @@ class PayplugPaymentService
         $privatekey = openssl_pkey_get_private($privateKey);
         openssl_sign($url_params, $signature, $privatekey, OPENSSL_ALGO_SHA1);
         $signatureBase64 = urlencode(base64_encode($signature));
-        
-        return $baseUrl . '?data=' . $data . '&sign=' . $signatureBase64;
-    }
+
+        Payplug\Payplug::setSecretKey($this->testSecretKey);
+        /* $payment = PM::create(array(
+             'amount'         => 100,
+             'currency'       => 'EUR',
+             'billing'          => array(
+                 'title'        => 'mr',
+                 'first_name'   => 'John',
+                 'last_name'    => 'Watson',
+                 'email'        => 'john.watson@example.net',
+                 'address1'     => '221B Baker Street',
+                 'postcode'     => 'NW16XE',
+                 'city'         => 'London',
+                 'country'      => 'GB',
+                 'language'     => 'en'
+             ),
+             'shipping'          => array(
+                 'title'         => 'mr',
+                 'first_name'    => 'John',
+                 'last_name'     => 'Watson',
+                 'email'         => 'john.watson@example.net',
+                 'address1'      => '221B Baker Street',
+                 'postcode'      => 'NW16XE',
+                 'city'          => 'London',
+                 'country'       => 'GB',
+                 'language'      => 'en',
+                 'delivery_type' => 'BILLING'
+             ),
+             'hosted_payment' => array(
+                 'return_url' => 'https://example.net/success',
+                 'cancel_url' => 'https://example.net/cancel'
+             ),
+             'notification_url' => 'https://example.net/notifications'
+         ));
+         *///return $payment->hosted_payment->payment_url;
+
+
+
+
+        return 'http://google.com'; //$baseUrl . '?data=' . $data . '&sign=' . $signatureBase64;
+        }
     
     /**
      * Return default ipn url used by the bundle (Something like "http://yoursite.com/payplug_ipn").
